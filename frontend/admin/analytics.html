@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics | Admin | DeutschPuzzle</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+ 
+    <div class="admin-layout">
+ 
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-logo">
+                <h2>🇩🇪 Admin</h2>
+                <span id="adminName"></span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/admin/index.html" class="sidebar-link">📊 Dashboard</a>
+                <a href="/admin/categories.html" class="sidebar-link">📁 Categories</a>
+                <a href="/admin/words.html" class="sidebar-link">📝 Words</a>
+                <a href="/admin/analytics.html" class="sidebar-link active">📈 Analytics</a>
+                <hr>
+                <a href="/dashboard.html" class="sidebar-link">🎮 Player View</a>
+                <button onclick="logout()" class="sidebar-logout">🚪 Logout</button>
+            </nav>
+        </aside>
+ 
+        <!-- MAIN -->
+        <main class="admin-main">
+            <div class="admin-topbar">
+                <h2>Analytics Overview</h2>
+            </div>
+ 
+            <!-- TOP STATS -->
+            <div class="admin-stats-grid">
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">👥</div>
+                    <div class="admin-stat-info">
+                        <h3 id="totalUsers">—</h3>
+                        <p>Total Users</p>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">🎮</div>
+                    <div class="admin-stat-info">
+                        <h3 id="totalGames">—</h3>
+                        <p>Games Played</p>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">📝</div>
+                    <div class="admin-stat-info">
+                        <h3 id="totalWords">—</h3>
+                        <p>Total Words</p>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">📁</div>
+                    <div class="admin-stat-info">
+                        <h3 id="totalCategories">—</h3>
+                        <p>Categories</p>
+                    </div>
+                </div>
+            </div>
+ 
+            <!-- CATEGORIES BREAKDOWN -->
+            <div class="admin-section">
+                <h3>Categories Breakdown</h3>
+                <div class="table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Difficulty</th>
+                                <th>Words Count</th>
+                                <th>Grid Size</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="analyticsTable">
+                            <tr>
+                                <td colspan="5" class="loading-cell">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+ 
+        </main>
+    </div>
+ 
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/admin.js"></script>
+    <script>
+        requireAdmin();
+        document.getElementById('adminName').textContent = getUser().username;
+ 
+        const loadAnalyticsPage = async () => {
+            // Load summary stats
+            const data = await getAnalytics();
+            document.getElementById('totalUsers').textContent      = data.totalUsers ?? '—';
+            document.getElementById('totalGames').textContent      = data.totalGamesPlayed ?? '—';
+            document.getElementById('totalWords').textContent      = data.totalWords ?? '—';
+            document.getElementById('totalCategories').textContent = data.totalCategories ?? '—';
+ 
+            // Load categories breakdown
+            const categories = await getCategories();
+            const tbody = document.getElementById('analyticsTable');
+ 
+            if (!categories || categories.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="loading-cell">No categories yet.</td></tr>`;
+                return;
+            }
+ 
+            tbody.innerHTML = categories.map(cat => `
+                <tr>
+                    <td><strong>${cat.name}</strong></td>
+                    <td>
+                        <span class="badge badge-${cat.difficulty.toLowerCase()}">
+                            ${cat.difficulty}
+                        </span>
+                    </td>
+                    <td>—</td>
+                    <td>${cat.gridSize}×${cat.gridSize}</td>
+                    <td>
+                        <span class="status-badge ${cat.isActive ? 'status-active' : 'status-inactive'}">
+                            ${cat.isActive ? 'Active' : 'Inactive'}
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        };
+ 
+        loadAnalyticsPage();
+    </script>
+ 
+</body>
+</html>

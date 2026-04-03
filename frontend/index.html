@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeutschPuzzle | Learn German Through Word Puzzles</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <!-- ─── NAVBAR ─────────────────────────────────────── -->
+    <nav class="navbar">
+        <h1>🇩🇪 DeutschPuzzle</h1>
+        <div class="nav-links">
+            <a href="/leaderboard.html">Leaderboard</a>
+            <a href="/login.html" class="btn-nav">Login</a>
+            <a href="/register.html" class="btn-nav btn-nav-primary">Register</a>
+        </div>
+    </nav>
+
+    <!-- ─── HERO SECTION ───────────────────────────────── -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Learn German the Fun Way</h2>
+            <p>
+                Find hidden German words in our interactive puzzles.
+                Track your progress, beat your high score, and climb
+                the leaderboard!
+            </p>
+            <div class="hero-buttons">
+                <a href="/register.html" class="btn-primary">
+                    Start Playing Free
+                </a>
+                <a href="/leaderboard.html" class="btn-secondary">
+                    View Leaderboard
+                </a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="puzzle-preview">
+                <div class="preview-grid">
+                    <span class="hl">B</span>
+                    <span>R</span>
+                    <span>O</span>
+                    <span class="hl">T</span>
+                    <span>X</span>
+                    <span>K</span>
+                    <span>A</span>
+                    <span class="hl">E</span>
+                    <span>S</span>
+                    <span class="hl">E</span>
+                    <span>Z</span>
+                    <span>W</span>
+                    <span class="hl">A</span>
+                    <span>P</span>
+                    <span>F</span>
+                    <span class="hl">E</span>
+                    <span>L</span>
+                    <span>Q</span>
+                    <span>M</span>
+                    <span>N</span>
+                    <span>W</span>
+                    <span class="hl">A</span>
+                    <span class="hl">S</span>
+                    <span class="hl">S</span>
+                    <span class="hl">E</span>
+                    <span class="hl">R</span>
+                    <span>T</span>
+                    <span>Y</span>
+                    <span>U</span>
+                    <span>I</span>
+                    <span>O</span>
+                    <span>P</span>
+                    <span>L</span>
+                    <span>K</span>
+                    <span>J</span>
+                    <span>H</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── FEATURES SECTION ────────────────────────────── -->
+    <section class="features">
+        <h2>Why DeutschPuzzle?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <span class="feature-icon">🎮</span>
+                <h3>Fun Word Puzzles</h3>
+                <p>
+                    Find hidden German words across multiple categories
+                    like Food, Travel, Animals and more.
+                </p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">📊</span>
+                <h3>Track Progress</h3>
+                <p>
+                    See your game history, total score, and improvement
+                    over time on your personal dashboard.
+                </p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🏆</span>
+                <h3>Leaderboard</h3>
+                <p>
+                    Compete with players from around the world and
+                    climb to the top of the global leaderboard.
+                </p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">📚</span>
+                <h3>Multiple Levels</h3>
+                <p>
+                    Choose from Easy, Medium, and Hard difficulty levels
+                    to match your German language skill.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── CATEGORIES PREVIEW ───────────────────────────── -->
+    <section class="categories-preview">
+        <h2>Available Categories</h2>
+        <div id="categoriesPreview" class="categories-grid">
+            <p>Loading categories...</p>
+        </div>
+        <div class="center-btn">
+            <a href="/register.html" class="btn-primary">
+                Play Now — It's Free!
+            </a>
+        </div>
+    </section>
+
+    <!-- ─── FOOTER ───────────────────────────────────────── -->
+    <footer class="footer">
+        <p>🇩🇪 DeutschPuzzle — Learn German Through Play</p>
+        <p>Built with Spring Boot + Vanilla JS</p>
+    </footer>
+
+    <script src="/js/api.js"></script>
+    <script>
+        // Redirect to dashboard if already logged in
+        if (localStorage.getItem('token')) {
+            window.location.href = '/dashboard.html';
+        }
+
+        // Load categories preview on landing page
+        const loadCategoriesPreview = async () => {
+            const categories = await getCategories();
+            const grid = document.getElementById('categoriesPreview');
+
+            if (!categories || categories.length === 0) {
+                grid.innerHTML = '<p>No categories available yet.</p>';
+                return;
+            }
+
+            grid.innerHTML = categories.map(cat => `
+                <div class="category-card">
+                    <h3>${cat.name}</h3>
+                    <p>${cat.description}</p>
+                    <span class="badge badge-${cat.difficulty.toLowerCase()}">
+                        ${cat.difficulty}
+                    </span>
+                    <a href="/register.html" class="btn-primary">
+                        Play Now
+                    </a>
+                </div>
+            `).join('');
+        };
+
+        loadCategoriesPreview();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | DeutschPuzzle</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+ 
+    <!-- SIDEBAR -->
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="sidebar-logo">
+                <h2>🇩🇪 Admin</h2>
+                <span id="adminName"></span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/admin/index.html" class="sidebar-link active">
+                    📊 Dashboard
+                </a>
+                <a href="/admin/categories.html" class="sidebar-link">
+                    📁 Categories
+                </a>
+                <a href="/admin/words.html" class="sidebar-link">
+                    📝 Words
+                </a>
+                <a href="/admin/analytics.html" class="sidebar-link">
+                    📈 Analytics
+                </a>
+                <hr>
+                <a href="/dashboard.html" class="sidebar-link">
+                    🎮 Player View
+                </a>
+                <button onclick="logout()" class="sidebar-logout">
+                    🚪 Logout
+                </button>
+            </nav>
+        </aside>
+ 
+        <!-- MAIN CONTENT -->
+        <main class="admin-main">
+            <div class="admin-topbar">
+                <h2>Dashboard Overview</h2>
+            </div>
+ 
+            <!-- STATS CARDS -->
+            <div class="admin-stats-grid">
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">👥</div>
+                    <div class="admin-stat-info">
+                        <h3 id="totalUsers">—</h3>
+                        <p>Total Users</p>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">📁</div>
+                    <div class="admin-stat-info">
+                        <h3 id="totalCategories">—</h3>
+                        <p>Categories</p>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">📝</div>
+                    <div class="admin-stat-info">
+                        <h3 id="totalWords">—</h3>
+                        <p>Total Words</p>
+                    </div>
+                </div>
+                <div class="admin-stat-card">
+                    <div class="admin-stat-icon">🎮</div>
+                    <div class="admin-stat-info">
+                        <h3 id="totalGames">—</h3>
+                        <p>Games Played</p>
+                    </div>
+                </div>
+            </div>
+ 
+            <!-- QUICK ACTIONS -->
+            <div class="admin-section">
+                <h3>Quick Actions</h3>
+                <div class="quick-actions">
+                    <a href="/admin/categories.html" class="action-card">
+                        <span>📁</span>
+                        <p>Manage Categories</p>
+                    </a>
+                    <a href="/admin/words.html" class="action-card">
+                        <span>📝</span>
+                        <p>Manage Words</p>
+                    </a>
+                    <a href="/admin/analytics.html" class="action-card">
+                        <span>📈</span>
+                        <p>View Analytics</p>
+                    </a>
+                    <a href="/admin/leaderboard.html" class="action-card">
+                        <span>🏆</span>
+                        <p>View Leaderboard</p>
+                    </a>
+                </div>
+            </div>
+ 
+            <!-- USERS TABLE -->
+            <div class="admin-section">
+                <h3>Registered Users</h3>
+                <div class="table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Joined</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <tr>
+                                <td colspan="7" class="loading-cell">
+                                    Loading users...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+ 
+        </main>
+    </div>
+ 
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/admin.js"></script>
+    <script src="/js/api.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/admin.js"></script>
+<script>
+    requireAdmin();   // ← This must be FIRST
+
+    const user = getUser();
+    document.getElementById('adminName').textContent = user.username;
+
+    const loadAnalytics = async () => {
+        const data = await getAnalytics();
+        document.getElementById('totalUsers').textContent      = data.totalUsers ?? '—';
+        document.getElementById('totalCategories').textContent = data.totalCategories ?? '—';
+        document.getElementById('totalWords').textContent      = data.totalWords ?? '—';
+        document.getElementById('totalGames').textContent      = data.totalGamesPlayed ?? '—';
+    };
+
+    const loadUsers = async () => {
+        const users = await getAllUsers();
+        const tbody = document.getElementById('usersTable');
+
+        if (!users || users.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" class="loading-cell">No users found.</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = users.map(u => `
+            <tr>
+                <td>${u.id}</td>
+                <td><strong>${u.username}</strong></td>
+                <td>${u.email}</td>
+                <td>
+                    <span class="role-badge role-${u.role.toLowerCase()}">
+                        ${u.role}
+                    </span>
+                </td>
+                <td>
+                    <span class="status-badge ${u.isActive ? 'status-active' : 'status-inactive'}">
+                        ${u.isActive ? 'Active' : 'Disabled'}
+                    </span>
+                </td>
+                <td>${new Date(u.createdAt).toLocaleDateString()}</td>
+                <td>
+                    <button
+                        onclick="toggleUser(${u.id}, ${u.isActive})"
+                        class="btn-table ${u.isActive ? 'btn-table-danger' : 'btn-table-success'}">
+                        ${u.isActive ? 'Disable' : 'Enable'}
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+    };
+
+    loadAnalytics();
+    loadUsers();
+</script>
+ 
+</body>
+</html>
+ 

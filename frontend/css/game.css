@@ -1,0 +1,312 @@
+/* css/game.css */
+ 
+/* ─── GAME HEADER ────────────────────────────────── */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+ 
+.game-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+ 
+.game-info h2 {
+    font-size: 1.6rem;
+    color: #1a1a1a;
+}
+ 
+.game-stats {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+ 
+.stat-pill {
+    background: white;
+    border-radius: 50px;
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    min-width: 90px;
+}
+ 
+.stat-label {
+    font-size: 0.75rem;
+    color: #888;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+ 
+.stat-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-top: 2px;
+}
+ 
+/* ─── GAME CONTAINER ─────────────────────────────── */
+.game-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto 40px;
+    padding: 0 24px;
+    gap: 28px;
+    align-items: flex-start;
+}
+ 
+/* ─── WORD LIST PANEL ────────────────────────────── */
+.word-list-panel {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    min-width: 220px;
+    max-width: 260px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 20px;
+}
+ 
+.word-list-panel h3 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f0f0f0;
+}
+ 
+.word-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+ 
+.word-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #f9f9f9;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+ 
+.word-item.found {
+    background: #E8F5E9;
+    border-left-color: #4CAF50;
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+ 
+.german-word {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #1a1a1a;
+}
+ 
+.english-word {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 2px;
+}
+ 
+/* ─── GRID PANEL ─────────────────────────────────── */
+.grid-panel {
+    flex: 1;
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+ 
+/* ─── GAME GRID ──────────────────────────────────── */
+.game-grid {
+    display: grid;
+    gap: 4px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+ 
+.grid-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: clamp(0.7rem, 2vw, 1rem);
+    border-radius: 8px;
+    background: #f5f5f5;
+    color: #333;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, transform 0.1s;
+    border: 2px solid transparent;
+}
+ 
+.grid-cell:hover {
+    background: #e8f5e9;
+    border-color: #a5d6a7;
+}
+ 
+.grid-cell.selecting {
+    background: #fff9c4;
+    border-color: #f9a825;
+    color: #1a1a1a;
+    transform: scale(1.05);
+}
+ 
+.grid-cell.found {
+    background: #4CAF50;
+    color: white;
+    border-color: #388E3C;
+}
+ 
+.grid-cell.wrong {
+    background: #ffebee;
+    border-color: #ef9a9a;
+    color: #c62828;
+    animation: shake 0.4s ease;
+}
+ 
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25%       { transform: translateX(-4px); }
+    75%       { transform: translateX(4px); }
+}
+ 
+/* ─── WIN MODAL ──────────────────────────────────── */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    animation: fadeIn 0.3s ease;
+}
+ 
+.modal.hidden {
+    display: none;
+}
+ 
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+ 
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    padding: 48px 40px;
+    text-align: center;
+    max-width: 440px;
+    width: 90%;
+    animation: slideUp 0.3s ease;
+}
+ 
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+ 
+.modal-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+}
+ 
+.modal-content h2 {
+    font-size: 2rem;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+}
+ 
+.modal-content p {
+    color: #666;
+    margin-bottom: 28px;
+}
+ 
+.modal-stats {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 12px;
+}
+ 
+.modal-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+ 
+.modal-stat-label {
+    font-size: 0.75rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+ 
+.modal-stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #4CAF50;
+}
+ 
+.modal-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+ 
+.modal-buttons .btn-primary {
+    text-decoration: none;
+}
+ 
+.modal-buttons .btn-secondary {
+    text-align: center;
+    display: block;
+}
+ 
+/* ─── RESPONSIVE ─────────────────────────────────── */
+@media (max-width: 768px) {
+    .game-container {
+        flex-direction: column;
+    }
+ 
+    .word-list-panel {
+        max-width: 100%;
+        min-width: unset;
+        position: static;
+    }
+ 
+    .word-list {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+ 
+    .word-item {
+        flex: 1;
+        min-width: 120px;
+    }
+ 
+    .game-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Words | Admin | DeutschPuzzle</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+ 
+    <div class="admin-layout">
+ 
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-logo">
+                <h2>🇩🇪 Admin</h2>
+                <span id="adminName"></span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="/admin/index.html" class="sidebar-link">📊 Dashboard</a>
+                <a href="/admin/categories.html" class="sidebar-link">📁 Categories</a>
+                <a href="/admin/words.html" class="sidebar-link active">📝 Words</a>
+                <a href="/admin/analytics.html" class="sidebar-link">📈 Analytics</a>
+                <hr>
+                <a href="/dashboard.html" class="sidebar-link">🎮 Player View</a>
+                <button onclick="logout()" class="sidebar-logout">🚪 Logout</button>
+            </nav>
+        </aside>
+ 
+        <!-- MAIN -->
+        <main class="admin-main">
+            <div class="admin-topbar">
+                <h2>Manage Words</h2>
+                <button onclick="openAddWordModal()" class="btn-primary"
+                        style="width:auto;padding:10px 20px;">
+                    + Add Word
+                </button>
+            </div>
+ 
+            <!-- FILTER BY CATEGORY -->
+            <div class="admin-section">
+                <div class="filter-bar">
+                    <label>Filter by Category:</label>
+                    <select id="categoryFilter" onchange="loadWordsTable()">
+                        <option value="">All Categories</option>
+                    </select>
+                </div>
+ 
+                <div class="table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>German Word</th>
+                                <th>English Translation</th>
+                                <th>Hint</th>
+                                <th>Category</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="wordsTable">
+                            <tr>
+                                <td colspan="6" class="loading-cell">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+ 
+    <!-- ADD WORD MODAL -->
+    <div id="addWordModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Add New Word</h2>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="wordCategory"></select>
+            </div>
+            <div class="form-group">
+                <label>German Word</label>
+                <input type="text" id="wordGerman" placeholder="e.g. BROT">
+            </div>
+            <div class="form-group">
+                <label>English Translation</label>
+                <input type="text" id="wordEnglish" placeholder="e.g. Bread">
+            </div>
+            <div class="form-group">
+                <label>Hint (optional)</label>
+                <input type="text" id="wordHint" placeholder="e.g. You eat this every morning">
+            </div>
+            <p id="wordModalError" class="error-text"></p>
+            <div style="display:flex;gap:10px;margin-top:16px;">
+                <button onclick="submitAddWord()" class="btn-primary">Save</button>
+                <button onclick="closeWordModal()" class="btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+ 
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/admin.js"></script>
+    <script>
+        requireAdmin();
+        document.getElementById('adminName').textContent = getUser().username;
+ 
+        // Load categories into filter and modal dropdown
+        const loadCategoryDropdowns = async () => {
+            const categories = await getCategories();
+            const filter = document.getElementById('categoryFilter');
+            const wordCat = document.getElementById('wordCategory');
+ 
+            categories.forEach(cat => {
+                filter.innerHTML  += `<option value="${cat.id}">${cat.name}</option>`;
+                wordCat.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+            });
+ 
+            loadWordsTable();
+        };
+ 
+        function openAddWordModal() {
+            document.getElementById('addWordModal').classList.remove('hidden');
+        }
+ 
+        function closeWordModal() {
+            document.getElementById('addWordModal').classList.add('hidden');
+            document.getElementById('wordModalError').textContent = '';
+        }
+ 
+        async function submitAddWord() {
+            const categoryId = document.getElementById('wordCategory').value;
+            const german     = document.getElementById('wordGerman').value.trim().toUpperCase();
+            const english    = document.getElementById('wordEnglish').value.trim();
+            const hint       = document.getElementById('wordHint').value.trim();
+ 
+            if (!german || !english) {
+                document.getElementById('wordModalError').textContent =
+                    'German word and translation are required';
+                return;
+            }
+ 
+            await addWord(categoryId, german, english, hint);
+            closeWordModal();
+            loadWordsTable();
+        }
+ 
+        loadCategoryDropdowns();
+    </script>
+ 
+</body>
+</html>

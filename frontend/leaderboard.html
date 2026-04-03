@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard | DeutschPuzzle</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+ 
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <h1>🇩🇪 DeutschPuzzle</h1>
+        <div class="nav-links">
+            <a href="/dashboard.html">Dashboard</a>
+            <a href="/index.html">Home</a>
+        </div>
+    </nav>
+ 
+    <!-- HEADER -->
+    <section class="leaderboard-header">
+        <h2>🏆 Global Leaderboard</h2>
+        <p>Top players from around the world</p>
+    </section>
+ 
+    <!-- LEADERBOARD TABLE -->
+    <main class="leaderboard-container">
+        <div id="leaderboardContent">
+            <p class="loading-text">Loading leaderboard...</p>
+        </div>
+    </main>
+ 
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>🇩🇪 DeutschPuzzle — Learn German Through Play</p>
+    </footer>
+ 
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    
+    <script>
+        const loadLeaderboard = async () => {
+            const data = await getLeaderboard();
+            const container = document.getElementById('leaderboardContent');
+ 
+            if (!data || data.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <span>🎮</span>
+                        <p>No scores yet. Be the first to play!</p>
+                        <a href="/dashboard.html" class="btn-primary"
+                           style="width:auto;padding:12px 24px;
+                                  text-decoration:none;display:inline-block;">
+                            Play Now
+                        </a>
+                    </div>`;
+                return;
+            }
+ 
+            const medals = ['🥇', '🥈', '🥉'];
+ 
+            container.innerHTML = `
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th>Category</th>
+                            <th>Best Score</th>
+                            <th>Best Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map((entry, i) => `
+                            <tr class="${i < 3 ? 'top-rank' : ''}">
+                                <td class="rank-cell">
+                                    ${i < 3
+                                        ? `<span class="medal">${medals[i]}</span>`
+                                        : `<span class="rank-num">#${i + 1}</span>`
+                                    }
+                                </td>
+                                <td class="player-cell">
+                                    <div class="player-avatar">
+                                        ${(entry.user?.username || 'Player')[0].toUpperCase()}
+                                    </div>
+                                    <span>${entry.user?.username || 'Player'}</span>
+                                </td>
+                                <td>${entry.category?.name || '—'}</td>
+                                <td class="score-cell">${entry.bestScore}</td>
+                                <td class="time-cell">
+                                    ${formatTime(entry.bestTime)}
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        };
+ 
+        const formatTime = (seconds) => {
+            if (!seconds) return '—';
+            const m = String(Math.floor(seconds / 60)).padStart(2, '0');
+            const s = String(seconds % 60).padStart(2, '0');
+            return `${m}:${s}`;
+        };
+ 
+        loadLeaderboard();
+    </script>
+ 
+    <style>
+        .leaderboard-header {
+            text-align: center;
+            padding: 48px 20px 32px;
+        }
+ 
+        .leaderboard-header h2 {
+            font-size: 2.2rem;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+ 
+        .leaderboard-header p {
+            color: #888;
+            font-size: 1rem;
+        }
+ 
+        .leaderboard-container {
+            max-width: 860px;
+            margin: 0 auto 60px;
+            padding: 0 24px;
+        }
+ 
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+ 
+        .leaderboard-table thead {
+            background: #4CAF50;
+            color: white;
+        }
+ 
+        .leaderboard-table th {
+            padding: 16px 20px;
+            text-align: left;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+ 
+        .leaderboard-table td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+        }
+ 
+        .leaderboard-table tr:last-child td {
+            border-bottom: none;
+        }
+ 
+        .leaderboard-table tr.top-rank {
+            background: #f9fbe7;
+        }
+ 
+        .leaderboard-table tr:hover {
+            background: #f5f5f5;
+        }
+ 
+        .rank-cell { text-align: center; width: 60px; }
+ 
+        .medal { font-size: 1.5rem; }
+ 
+        .rank-num {
+            font-weight: 700;
+            color: #888;
+        }
+ 
+        .player-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+ 
+        .player-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #4CAF50;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+ 
+        .score-cell {
+            font-weight: 700;
+            color: #4CAF50;
+            font-size: 1.1rem;
+        }
+ 
+        .time-cell { color: #666; }
+ 
+        .loading-text {
+            text-align: center;
+            color: #888;
+            padding: 40px;
+        }
+ 
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+ 
+        .empty-state span {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 16px;
+        }
+ 
+        .empty-state p {
+            color: #666;
+            margin-bottom: 24px;
+        }
+    </style>
+ 
+</body>
+</html>
