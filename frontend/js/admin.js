@@ -41,22 +41,18 @@ const loadCategoriesTable = async () => {
         return;
     }
  
+    
     tbody.innerHTML = categories.map(cat => `
         <tr>
             <td>${cat.id}</td>
             <td><strong>${cat.name}</strong></td>
             <td>${cat.description || '—'}</td>
             <td>
-                <span class="badge badge-${cat.difficulty.toLowerCase()}">
-                    ${cat.difficulty}
-                </span>
-            </td>
-            <td>${cat.gridSize}×${cat.gridSize}</td>
-            <td>
                 <span class="status-badge ${cat.isActive ? 'status-active' : 'status-inactive'}">
                     ${cat.isActive ? 'Active' : 'Inactive'}
                 </span>
             </td>
+            <td>${new Date(cat.createdAt).toLocaleDateString()}</td>
             <td>
                 <button
                     onclick="deleteCategoryById(${cat.id}, '${cat.name}')"

@@ -23,7 +23,7 @@
     <div class="game-header">
         <div class="game-info">
             <h2 id="categoryName">Loading...</h2>
-            <span id="difficultyBadge" class="badge">...</span>
+            <span id="roundDisplay" class="round-display">Round 1/10</span>
         </div>
         <div class="game-stats">
             <div class="stat-pill">
@@ -81,6 +81,51 @@
                 <button onclick="playAgain()" class="btn-primary">Play Again</button>
                 <a href="/dashboard.html" class="btn-secondary">Dashboard</a>
                 <a href="/leaderboard.html" class="btn-secondary">Leaderboard</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROUND COMPLETE MODAL -->
+    <div id="roundModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-icon">⭐</div>
+            <h2>Round <span id="completedRound"></span> Complete!</h2>
+            <p>Get ready for the next round!</p>
+            <div class="modal-stats">
+                <div class="modal-stat">
+                    <span class="modal-stat-label">Score So Far</span>
+                    <span id="roundScore" class="modal-stat-value">0</span>
+                </div>
+                <div class="modal-stat">
+                    <span class="modal-stat-label">Next Round</span>
+                    <span id="nextRound" class="modal-stat-value">2</span>
+                </div>
+                <div class="modal-stat">
+                    <span class="modal-stat-label">Next Timer</span>
+                    <span id="nextTimerValue" class="modal-stat-value">110s</span>
+                </div>
+            </div>
+            <button onclick="goToNextRound()" class="btn-primary">
+                Next Round →
+            </button>
+        </div>
+    </div>
+
+    <!-- GAME OVER MODAL -->
+    <div id="gameOverModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-icon">⏰</div>
+            <h2>Time's Up!</h2>
+            <p>You ran out of time on Round <span id="gameOverRound"></span></p>
+            <div class="modal-stats">
+                <div class="modal-stat">
+                    <span class="modal-stat-label">Final Score</span>
+                    <span id="gameOverScore" class="modal-stat-value">0</span>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button onclick="playAgain()" class="btn-primary">Try Again</button>
+                <a href="/dashboard.html" class="btn-secondary">Dashboard</a>
             </div>
         </div>
     </div>

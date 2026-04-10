@@ -96,11 +96,11 @@ const getAllUsers = async () => {
     return res.json();
 };
 
-const createCategory = async (name, description, difficulty, gridSize) => {
+const createCategory = async (name, description) => {
     const res = await fetch(`${BASE_URL}/admin/categories`, {
         method: 'POST',
         headers: authHeaders(),
-        body: JSON.stringify({ name, description, difficulty, gridSize, isActive: true })
+        body: JSON.stringify({ name, description, isActive: true })
     });
     return res.json();
 };

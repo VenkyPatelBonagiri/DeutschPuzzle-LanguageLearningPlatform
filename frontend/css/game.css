@@ -310,3 +310,12 @@
         align-items: flex-start;
     }
 }
+
+.round-display {
+    background: #4CAF50;
+    color: white;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
