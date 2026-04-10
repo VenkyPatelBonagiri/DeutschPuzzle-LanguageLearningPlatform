@@ -27,13 +27,11 @@ public class AdminController {
 
     // ─── USER MANAGEMENT ───────────────────────────────────────
 
-    // Get all users
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userRepository.findAll());
     }
 
-    // Disable a user account
     @PutMapping("/users/{id}/disable")
     public ResponseEntity<String> disableUser(@PathVariable Long id) {
         User user = userRepository.findById(id)
@@ -43,7 +41,6 @@ public class AdminController {
         return ResponseEntity.ok("User disabled successfully");
     }
 
-    // Enable a user account
     @PutMapping("/users/{id}/enable")
     public ResponseEntity<String> enableUser(@PathVariable Long id) {
         User user = userRepository.findById(id)
@@ -53,7 +50,6 @@ public class AdminController {
         return ResponseEntity.ok("User enabled successfully");
     }
 
-    // Delete a user
     @DeleteMapping("/users/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         userRepository.deleteById(id);
@@ -62,20 +58,19 @@ public class AdminController {
 
     // ─── CATEGORY MANAGEMENT ───────────────────────────────────
 
-    // Get all categories (including inactive)
     @GetMapping("/categories")
     public ResponseEntity<List<Category>> getAllCategories() {
         return ResponseEntity.ok(categoryRepository.findAll());
     }
 
-    // Create new category
+    // Create new category — difficulty and gridSize removed
     @PostMapping("/categories")
     public ResponseEntity<Category> createCategory(
             @RequestBody Category category) {
         return ResponseEntity.ok(categoryRepository.save(category));
     }
 
-    // Update existing category
+    // Update category — difficulty and gridSize removed
     @PutMapping("/categories/{id}")
     public ResponseEntity<Category> updateCategory(
             @PathVariable Long id,
@@ -86,14 +81,11 @@ public class AdminController {
 
         category.setName(updatedCategory.getName());
         category.setDescription(updatedCategory.getDescription());
-        category.setDifficulty(updatedCategory.getDifficulty());
-        category.setGridSize(updatedCategory.getGridSize());
         category.setIsActive(updatedCategory.getIsActive());
 
         return ResponseEntity.ok(categoryRepository.save(category));
     }
 
-    // Delete category
     @DeleteMapping("/categories/{id}")
     public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
         categoryRepository.deleteById(id);
@@ -102,7 +94,6 @@ public class AdminController {
 
     // ─── WORD MANAGEMENT ───────────────────────────────────────
 
-    // Get all words for a category
     @GetMapping("/categories/{categoryId}/words")
     public ResponseEntity<List<Word>> getWords(
             @PathVariable Long categoryId) {
@@ -111,7 +102,6 @@ public class AdminController {
         );
     }
 
-    // Add a new word to a category
     @PostMapping("/words")
     public ResponseEntity<Word> addWord(@RequestBody Map<String, Object> body) {
 
@@ -128,7 +118,6 @@ public class AdminController {
         return ResponseEntity.ok(wordRepository.save(word));
     }
 
-    // Update a word
     @PutMapping("/words/{id}")
     public ResponseEntity<Word> updateWord(
             @PathVariable Long id,
@@ -144,7 +133,6 @@ public class AdminController {
         return ResponseEntity.ok(wordRepository.save(word));
     }
 
-    // Delete a word
     @DeleteMapping("/words/{id}")
     public ResponseEntity<String> deleteWord(@PathVariable Long id) {
         wordRepository.deleteById(id);
@@ -157,8 +145,6 @@ public class AdminController {
     public ResponseEntity<Map<String, Object>> getAnalytics() {
 
         Map<String, Object> analytics = new HashMap<>();
-
-        // Total counts
         analytics.put("totalUsers", userRepository.count());
         analytics.put("totalCategories", categoryRepository.count());
         analytics.put("totalWords", wordRepository.count());

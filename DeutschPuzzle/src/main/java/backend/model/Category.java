@@ -26,10 +26,6 @@ public class Category {
 
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    private Difficulty difficulty = Difficulty.MEDIUM;
-
-    private Integer gridSize = 10;
 
     private Boolean isActive = true;
 
@@ -40,7 +36,4 @@ public class Category {
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     private List<Word> words;
 
-    public enum Difficulty {
-        EASY, MEDIUM, HARD
-    }
 }
