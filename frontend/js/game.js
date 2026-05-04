@@ -8,7 +8,7 @@ const WORDS_PER_ROUND = 6;
 const GRID_SIZE       = 15;
 
 // Timer per round — decreases by 10 seconds each round
-const ROUND_TIME = 120;
+const ROUND_TIME = 200;
 
 // ─── STATE ───────────────────────────────────────────────────────
 let grid          = [];
