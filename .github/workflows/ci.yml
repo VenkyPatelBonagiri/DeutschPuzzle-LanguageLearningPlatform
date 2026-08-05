@@ -9,6 +9,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./DeutschPuzzle
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK
