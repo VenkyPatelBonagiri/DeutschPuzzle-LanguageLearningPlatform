@@ -9,7 +9,7 @@ class DeutschPuzzleApplicationTests {
 
     @Test
     void contextLoads() {
-        assertEquals(1, 6);
+        assertEquals(1, 7);
     }
 
 }
